@@ -56,6 +56,7 @@ console.log("Students after enrollment:", studentManager.getAllStudents());
 
 // 5️⃣ Unenroll a student
 studentManager.unenrollStudent(jsCourse.id, yash.id);
+
 console.log("\nAfter unenrolling Bob from JS course:");
 console.log("Courses:", courseManager.getAllCourses());
 console.log("Students:", studentManager.getAllStudents());
