@@ -16,7 +16,7 @@ async function run() {
     const client: MongoClient = new MongoClient(uri); //creating a new MongoClient instance 
     try {
         await client.connect(); //connecting to the MongoDB Atlas cluster
-        console.log("Connected successfully to MongoDB Atlas");
+        console.log("Connected successfully to MongoDB  campass");
         const database = client.db("demoDB"); //specifying the database name
         const collection = database.collection("demoCollection"); //specifying the collection name
         // Example CRUD operation: Insert a document
