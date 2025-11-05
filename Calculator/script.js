@@ -3,7 +3,7 @@ let input = document.getElementById("input");
 let buttons = document.querySelectorAll("button");
 // initially output is empty
 let output ="";
-// converting buttons from nodelist to array
+// converting buttons from list to array
 let arr = Array.from(buttons);
 // adding click event to each button using forEach loop
 arr.forEach(button =>{
