@@ -1,13 +1,13 @@
 import React from "react";
+import { Container } from 'react-bootstrap';
 import BookList from "./components/BookList";
-
 
 function App() {
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Featured Books</h1>
+    <Container className="py-4">
+      <h1 className="mb-4">Featured Books</h1>
       <BookList />
-    </div>
+    </Container>
   );
 }
 

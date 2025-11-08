@@ -1,22 +1,35 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { Card } from "react-bootstrap";
 
+type BookCardProps = {
+    title: string;
+    author: string;
+    price: number;
+    onClick?: () => void;
+};
 
-type BookCardprops ={
-
-    title:string;
-    author:string;
-    price:number;
-}
-
-function BookCard({title,author,price}:BookCardprops){
+function BookCard({ title, author, price, onClick }: BookCardProps) {
     return (
-        <div style={{border:"1px solid black",padding:"10px",margin:"10px" }}>
-            <h2>{title}</h2>
-            <p>author:{author}</p>
-            <p>price: {price}</p>
-        </div>
-
+        <Card className="mb-3" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
+            <Card.Body>
+                <Card.Title>{title}</Card.Title>
+                <Card.Text>
+                    <strong>Author:</strong> {author}
+                </Card.Text>
+                <Card.Text>
+                    <strong>Price:</strong> ${price}
+                </Card.Text>
+            </Card.Body>
+        </Card>
     );
-
 }
+
+BookCard.propTypes = {
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    onClick: PropTypes.func,
+};
+
 export default BookCard;
