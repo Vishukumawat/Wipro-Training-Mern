@@ -11,7 +11,7 @@ app.use(cors());
 
 
 // Serve static files from /uploads folder
-// Challenge 2: Student should download files from /materials/<filename>
+// Challenge 2: Student should download files 
 app.use("/materials", express.static("uploads"));
 
 // Parse JSON

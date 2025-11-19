@@ -12,6 +12,8 @@ app.use((req, res, next) => {
 });
 
 //Challenge 2: Built-in Middleware
+
+// parse JSON and URL-encoded bodies of incoming requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,6 +26,7 @@ app.post('/users', (req, res) => {
 });
 
 //Challenge 3: EJS Setup
+// Set up EJS
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
