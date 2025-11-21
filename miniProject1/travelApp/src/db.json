@@ -1,0 +1,54 @@
+{
+  "destinations": [
+    {
+      "id": 1,
+      "title": "Jaipur, Rajasthan",
+      "image": "/jaipur.jpg",
+      "price": "₹75,000",
+      "description": "Royal city with forts, palaces and rich culture."
+    },
+    {
+      "id": 2,
+      "title": "Bali, Indonesia",
+      "image": "/bali.jpg",
+      "price": "₹60,000",
+      "description": "Tropical paradise known for beaches and temples."
+    },
+    {
+      "id": 3,
+      "title": "Tokyo, Japan",
+      "image": "/bali.jpg",
+      "price": "₹95,000",
+      "description": "Modern city blending technology with ancient culture."
+    }
+  ],
+
+  "packages": [
+    {
+      "id": 1,
+      "title": "Bali Premium Tour",
+      "image": "/bali.jpg",
+      "duration": "5 nights",
+      "description": "Stunning beaches and guided temple tours.",
+      "price": "₹55,000"
+    },
+    {
+      "id": 2,
+      "title": "Jaipur Heritage Trip",
+      "image": "/jaipur.jpg",
+      "duration": "3 nights",
+      "description": "Explore forts, palaces and local bazaars.",
+      "price": "₹30,000"
+    },
+    {
+      "id": 3,
+      "title": "Tokyo Modern Tour",
+      "image": "/bali.jpg",
+      "duration": "4 nights",
+      "description": "Experience culture, technology and city life.",
+      "price": "₹85,000"
+    }
+  ],
+
+  "bookings": []
+}
