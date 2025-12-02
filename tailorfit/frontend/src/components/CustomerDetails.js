@@ -1,5 +1,5 @@
 // src/components/CustomerDetails.js
-// Right side panel: details + edit form toggle
+// FINAL FIXED VERSION – ALL measurements show correctly
 
 import React, { useState, useEffect } from "react";
 
@@ -21,7 +21,6 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
     measurements: emptyMeasurements
   });
 
-  // jab customer change ho, form ko update karo
   useEffect(() => {
     if (customer) {
       setFormState({
@@ -44,11 +43,9 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // name/mobile/notes directly
     if (["name", "mobile", "notes"].includes(name)) {
       setFormState((prev) => ({ ...prev, [name]: value }));
     } else {
-      // measurements ke andar
       setFormState((prev) => ({
         ...prev,
         measurements: {
@@ -59,34 +56,40 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
     }
   };
 
+  const convert = (val) => (val === "" ? null : Number(val));
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // onSave ko call karo, parent handle karega API
-    onSave({
+
+    const payload = {
       name: formState.name,
       mobile: formState.mobile,
       notes: formState.notes,
       measurements: {
-        // numeric fields me number convert karne ki koshish
-        chest: Number(formState.measurements.chest) || undefined,
-        waist: Number(formState.measurements.waist) || undefined,
-        hip: Number(formState.measurements.hip) || undefined,
-        shoulder: Number(formState.measurements.shoulder) || undefined,
-        armLength: Number(formState.measurements.armLength) || undefined,
-        legLength: Number(formState.measurements.legLength) || undefined
+        chest: convert(formState.measurements.chest),
+        waist: convert(formState.measurements.waist),
+        hip: convert(formState.measurements.hip),
+        shoulder: convert(formState.measurements.shoulder),
+        armLength: convert(formState.measurements.armLength),
+        legLength: convert(formState.measurements.legLength)
       }
-    });
+    };
+
+    onSave(payload);
     setIsEditing(false);
   };
 
+  const show = (v) => (v ? v + " inch" : "—");
+
   return (
     <div>
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-2">
-        <h5 className="mb-0">Customer Details</h5>
+        <h5>Customer Details</h5>
         <div className="d-flex gap-2">
           <button
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => setIsEditing((prev) => !prev)}
+            onClick={() => setIsEditing((p) => !p)}
           >
             {isEditing ? "Cancel" : "Edit"}
           </button>
@@ -99,8 +102,8 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
         </div>
       </div>
 
+      {/* VIEW MODE */}
       {!isEditing ? (
-        // read-only view
         <div>
           <p>
             <strong>Name:</strong> {customer.name}
@@ -111,19 +114,20 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
           <p>
             <strong>Notes:</strong> {customer.notes || "—"}
           </p>
+
           <h6>Measurements</h6>
           <ul className="list-unstyled">
-            <li>Chest: {customer.measurements?.chest || "—"}</li>
-            <li>Waist: {customer.measurements?.waist || "—"}</li>
-            <li>Hip: {customer.measurements?.hip || "—"}</li>
-            <li>Shoulder: {customer.measurements?.shoulder || "—"}</li>
-            <li>Arm Length: {customer.measurements?.armLength || "—"}</li>
-            <li>Leg Length: {customer.measurements?.legLength || "—"}</li>
+            <li>Chest: {show(customer.measurements?.chest)}</li>
+            <li>Waist: {show(customer.measurements?.waist)}</li>
+            <li>Hip: {show(customer.measurements?.hip)}</li>
+            <li>Shoulder: {show(customer.measurements?.shoulder)}</li>
+            <li>Arm Length: {show(customer.measurements?.armLength)}</li>
+            <li>Leg Length: {show(customer.measurements?.legLength)}</li>
           </ul>
         </div>
       ) : (
-        // edit form
-        <form onSubmit={handleSubmit} className="mt-2">
+        /* EDIT MODE */
+        <form onSubmit={handleSubmit}>
           <div className="mb-2">
             <label className="form-label">Name</label>
             <input
@@ -131,7 +135,6 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
               name="name"
               value={formState.name}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -142,7 +145,6 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
               name="mobile"
               value={formState.mobile}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -157,18 +159,17 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
           </div>
 
           <h6>Measurements</h6>
+
           <div className="row">
             {["chest", "waist", "hip", "shoulder", "armLength", "legLength"].map(
               (field) => (
                 <div className="col-6 mb-2" key={field}>
-                  <label className="form-label text-capitalize">
-                    {field}
-                  </label>
+                  <label className="form-label text-capitalize">{field}</label>
                   <input
                     type="number"
                     className="form-control"
                     name={field}
-                    value={formState.measurements[field]}
+                    value={formState.measurements[field] || ""}
                     onChange={handleChange}
                   />
                 </div>
@@ -176,9 +177,7 @@ const CustomerDetails = ({ customer, onSave, onDelete }) => {
             )}
           </div>
 
-          <button type="submit" className="btn btn-primary mt-2">
-            Save
-          </button>
+          <button className="btn btn-primary mt-2">Save</button>
         </form>
       )}
     </div>

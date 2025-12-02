@@ -1,5 +1,5 @@
 // src/components/CustomerForm.js
-// Top par new customer add karne ka simple form
+// Add New Customer Form (FINAL FIXED VERSION)
 
 import React, { useState } from "react";
 
@@ -36,29 +36,33 @@ const CustomerForm = ({ onCreate }) => {
     }
   };
 
+  const convert = (val) => (val === "" ? null : Number(val));
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onCreate({
+    const payload = {
       name: formState.name,
       mobile: formState.mobile,
       notes: formState.notes,
       measurements: {
-        chest: Number(formState.measurements.chest) || undefined,
-        waist: Number(formState.measurements.waist) || undefined,
-        hip: Number(formState.measurements.hip) || undefined,
-        shoulder: Number(formState.measurements.shoulder) || undefined,
-        armLength: Number(formState.measurements.armLength) || undefined,
-        legLength: Number(formState.measurements.legLength) || undefined
+        chest: convert(formState.measurements.chest),
+        waist: convert(formState.measurements.waist),
+        hip: convert(formState.measurements.hip),
+        shoulder: convert(formState.measurements.shoulder),
+        armLength: convert(formState.measurements.armLength),
+        legLength: convert(formState.measurements.legLength)
       }
-    });
+    };
 
-    setFormState(initialState); // reset fields
+    onCreate(payload);
+    setFormState(initialState);
   };
 
   return (
     <div className="card p-3 mb-3">
       <h5 className="mb-2">Add New Customer</h5>
+
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-4 mb-2">
@@ -66,21 +70,23 @@ const CustomerForm = ({ onCreate }) => {
             <input
               className="form-control"
               name="name"
+              required
               value={formState.name}
               onChange={handleChange}
-              required
             />
           </div>
+
           <div className="col-md-4 mb-2">
             <label className="form-label">Mobile</label>
             <input
               className="form-control"
               name="mobile"
+              required
               value={formState.mobile}
               onChange={handleChange}
-              required
             />
           </div>
+
           <div className="col-md-4 mb-2">
             <label className="form-label">Notes</label>
             <input
@@ -92,7 +98,8 @@ const CustomerForm = ({ onCreate }) => {
           </div>
         </div>
 
-        <h6 className="mt-2">Measurements</h6>
+        <h6>Measurements</h6>
+
         <div className="row">
           {["chest", "waist", "hip", "shoulder", "armLength", "legLength"].map(
             (field) => (
@@ -110,9 +117,7 @@ const CustomerForm = ({ onCreate }) => {
           )}
         </div>
 
-        <button type="submit" className="btn btn-success mt-2">
-          Save Customer
-        </button>
+        <button className="btn btn-success mt-2">Save Customer</button>
       </form>
     </div>
   );
