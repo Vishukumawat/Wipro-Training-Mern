@@ -25,9 +25,9 @@ function App() {
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ---------------------------------------------------
-  // 🔥 FIXED loadCustomers using useCallback
-  // ---------------------------------------------------
+ 
+  // FIXED loadCustomers using useCallback
+
   const loadCustomers = useCallback(
     async (query = "") => {
       try {
@@ -50,18 +50,18 @@ function App() {
     [selectedCustomer] // dependency because used inside callback
   );
 
-  // ---------------------------------------------------
+  
   // Load customers once user authenticates
-  // ---------------------------------------------------
+ 
   useEffect(() => {
     if (isAuthenticated) {
       loadCustomers();
     }
   }, [isAuthenticated, loadCustomers]);
 
-  // ---------------------------------------------------
+  
   // Login Handler
-  // ---------------------------------------------------
+  
   const handleLogin = async (email, password) => {
     try {
       setLoginError("");
@@ -75,9 +75,9 @@ function App() {
     }
   };
 
-  // ---------------------------------------------------
+
   // Logout
-  // ---------------------------------------------------
+ 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
@@ -86,16 +86,16 @@ function App() {
     setMessage("");
   };
 
-  // ---------------------------------------------------
+  
   // Search customers
-  // ---------------------------------------------------
+ 
   const handleSearch = (term) => {
     loadCustomers(term);
   };
 
-  // ---------------------------------------------------
+ 
   // Create Customer
-  // ---------------------------------------------------
+ 
   const handleCreate = async (payload) => {
     try {
       await createCustomer(payload);
@@ -106,9 +106,9 @@ function App() {
     }
   };
 
-  // ---------------------------------------------------
+ 
   // Update Customer
-  // ---------------------------------------------------
+ 
   const handleUpdate = async (payload) => {
     if (!selectedCustomer) return;
 
@@ -127,9 +127,9 @@ function App() {
     }
   };
 
-  // ---------------------------------------------------
+  
   // Delete Customer
-  // ---------------------------------------------------
+  
   const handleDelete = async () => {
     if (!selectedCustomer) return;
 
@@ -151,16 +151,16 @@ function App() {
     }
   };
 
-  // ---------------------------------------------------
+ 
   // If not logged in → show login page
-  // ---------------------------------------------------
+  
   if (!isAuthenticated) {
     return <Login onLogin={handleLogin} error={loginError} />;
   }
 
-  // ---------------------------------------------------
+ 
   // MAIN UI
-  // ---------------------------------------------------
+ 
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
