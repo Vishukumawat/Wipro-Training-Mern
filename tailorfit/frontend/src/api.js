@@ -1,8 +1,13 @@
 // src/api.js
 // All API calls in one place, using JWT token from localStorage
 
-const BASE_AUTH = "/api/auth";
-const BASE_CUSTOMERS = "/api/customers";
+//  Base URL: env se aayega, warna default localhost pe
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:10000";
+
+//  Backend ke routes
+const BASE_AUTH = `${API_BASE_URL}/api/auth`;
+const BASE_CUSTOMERS = `${API_BASE_URL}/api/customers`;
 
 // Helper: get Authorization header
 function getAuthHeaders() {
@@ -22,8 +27,14 @@ export async function login(email, password) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
+
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Login failed");
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Login failed");
+  }
+
+  // assuming backend returns { success: true, data: { token: '...' } }
   return data.data.token;
 }
 
@@ -38,7 +49,11 @@ export async function fetchCustomers(query = "") {
   });
 
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Failed to fetch customers");
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to fetch customers");
+  }
+
   return data.data;
 }
 
@@ -48,8 +63,13 @@ export async function createCustomer(payload) {
     headers: getAuthHeaders(),
     body: JSON.stringify(payload)
   });
+
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Failed to create customer");
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to create customer");
+  }
+
   return data.data;
 }
 
@@ -59,8 +79,13 @@ export async function updateCustomer(id, payload) {
     headers: getAuthHeaders(),
     body: JSON.stringify(payload)
   });
+
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Failed to update customer");
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to update customer");
+  }
+
   return data.data;
 }
 
@@ -69,7 +94,12 @@ export async function deleteCustomer(id) {
     method: "DELETE",
     headers: getAuthHeaders()
   });
+
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Failed to delete customer");
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to delete customer");
+  }
+
   return true;
 }

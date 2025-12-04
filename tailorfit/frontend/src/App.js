@@ -1,7 +1,7 @@
 // src/App.js
 // Handles login state + shows either Login screen or CRM dashboard
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Login from "./components/Login";
 import {
   login as loginApi,
@@ -25,33 +25,48 @@ function App() {
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Load customers when authenticated
+  // ---------------------------------------------------
+  // 🔥 FIXED loadCustomers using useCallback
+  // ---------------------------------------------------
+  const loadCustomers = useCallback(
+    async (query = "") => {
+      try {
+        setLoading(true);
+
+        const list = await fetchCustomers(query);
+        setCustomers(list);
+
+        // If selected customer got deleted or updated, sync
+        if (selectedCustomer) {
+          const stillExists = list.find((c) => c._id === selectedCustomer._id);
+          if (!stillExists) setSelectedCustomer(null);
+        }
+      } catch (err) {
+        setMessage(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [selectedCustomer] // dependency because used inside callback
+  );
+
+  // ---------------------------------------------------
+  // Load customers once user authenticates
+  // ---------------------------------------------------
   useEffect(() => {
     if (isAuthenticated) {
       loadCustomers();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, loadCustomers]);
 
-  const loadCustomers = async (query = "") => {
-    try {
-      setLoading(true);
-      const list = await fetchCustomers(query);
-      setCustomers(list);
-      if (selectedCustomer) {
-        const stillExists = list.find((c) => c._id === selectedCustomer._id);
-        if (!stillExists) setSelectedCustomer(null);
-      }
-    } catch (err) {
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // ---------------------------------------------------
+  // Login Handler
+  // ---------------------------------------------------
   const handleLogin = async (email, password) => {
     try {
       setLoginError("");
       const token = await loginApi(email, password);
+
       localStorage.setItem("token", token);
       setIsAuthenticated(true);
       setMessage("Login successful");
@@ -60,6 +75,9 @@ function App() {
     }
   };
 
+  // ---------------------------------------------------
+  // Logout
+  // ---------------------------------------------------
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
@@ -68,10 +86,16 @@ function App() {
     setMessage("");
   };
 
+  // ---------------------------------------------------
+  // Search customers
+  // ---------------------------------------------------
   const handleSearch = (term) => {
     loadCustomers(term);
   };
 
+  // ---------------------------------------------------
+  // Create Customer
+  // ---------------------------------------------------
   const handleCreate = async (payload) => {
     try {
       await createCustomer(payload);
@@ -82,41 +106,61 @@ function App() {
     }
   };
 
+  // ---------------------------------------------------
+  // Update Customer
+  // ---------------------------------------------------
   const handleUpdate = async (payload) => {
     if (!selectedCustomer) return;
+
     try {
       const updated = await updateCustomer(selectedCustomer._id, payload);
+
       setMessage("Customer updated successfully");
+
       setCustomers((prev) =>
         prev.map((c) => (c._id === updated._id ? updated : c))
       );
+
       setSelectedCustomer(updated);
     } catch (err) {
       setMessage(err.message);
     }
   };
 
+  // ---------------------------------------------------
+  // Delete Customer
+  // ---------------------------------------------------
   const handleDelete = async () => {
     if (!selectedCustomer) return;
+
     if (!window.confirm("Are you sure you want to delete this customer?")) {
       return;
     }
+
     try {
       await deleteCustomer(selectedCustomer._id);
       setMessage("Customer deleted");
+
       setCustomers((prev) =>
         prev.filter((c) => c._id !== selectedCustomer._id)
       );
+
       setSelectedCustomer(null);
     } catch (err) {
       setMessage(err.message);
     }
   };
 
+  // ---------------------------------------------------
+  // If not logged in → show login page
+  // ---------------------------------------------------
   if (!isAuthenticated) {
     return <Login onLogin={handleLogin} error={loginError} />;
   }
 
+  // ---------------------------------------------------
+  // MAIN UI
+  // ---------------------------------------------------
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -126,6 +170,7 @@ function App() {
             Manage customers & measurements (Admin logged in)
           </small>
         </div>
+
         <button className="btn btn-outline-danger" onClick={handleLogout}>
           Logout
         </button>
@@ -138,7 +183,6 @@ function App() {
       )}
 
       <CustomerForm onCreate={handleCreate} />
-
       <CustomerSearch onSearch={handleSearch} />
 
       {loading && <p>Loading customers...</p>}
@@ -152,6 +196,7 @@ function App() {
             selectedId={selectedCustomer?._id}
           />
         </div>
+
         <div className="col-md-8">
           <CustomerDetails
             customer={selectedCustomer}
