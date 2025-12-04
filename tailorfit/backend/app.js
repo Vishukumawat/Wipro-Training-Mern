@@ -1,21 +1,14 @@
-//
-// Set up Express app, middleware, routes
-
-// import all required modules
 const express = require('express');
 const cors = require('cors');
 
-// import routes
 const authRoutes = require('./routes/authRoutes');
 const customerRoutes = require('./routes/customerRoutes');
-
-// import auth middleware
 const auth = require("./middleware/authMiddleware");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
-// create Express app
 const app = express();
 
+// CORS
 app.use(
   cors({
     origin: [
@@ -26,27 +19,23 @@ app.use(
   })
 );
 
-app.options("/*", cors());
-
-// parse JSON body
 app.use(express.json());
 
-// Public routes (login, register)
+// Public routes
 app.use('/api/auth', authRoutes);
 
-// Protected routes (customers)
+// Protected routes
 app.use('/api/customers', auth, customerRoutes);
 
-// ✔ Catch-all route SHOULD BE AT THE END ONLY
+// Simple root route — THIS IS OK
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "TailorFit Backend is running",
-    data: null
+    message: "TailorFit Backend is running"
   });
 });
 
-// error handlers
+// Error handlers
 app.use(notFound);
 app.use(errorHandler);
 
