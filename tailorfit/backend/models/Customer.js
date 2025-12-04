@@ -25,9 +25,11 @@ const customerSchema = new mongoose.Schema(
         armLength: null,
         legLength: null
       })
-    }
+    },
+      isDeleted: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Customer", customerSchema);
+//   FIXED: FORCE collection name to "customers"
+module.exports = mongoose.model("Customer", customerSchema, "customers");

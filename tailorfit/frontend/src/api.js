@@ -1,10 +1,8 @@
 // src/api.js
 // All API calls in one place, using JWT token from localStorage
-const API_BASE =
-  process.env.REACT_APP_API_BASE || "";
 
-const BASE_AUTH = API_BASE + "/api/auth";
-const BASE_CUSTOMERS = API_BASE + "/api/customers";
+const BASE_AUTH = "/api/auth";
+const BASE_CUSTOMERS = "/api/customers";
 
 // Helper: get Authorization header
 function getAuthHeaders() {
